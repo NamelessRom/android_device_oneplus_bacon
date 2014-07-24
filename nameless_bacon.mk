@@ -29,7 +29,7 @@ $(call inherit-product, vendor/nameless/config/apns.mk)
 $(call inherit-product, vendor/nameless/config/common.mk)
 
 # Enhanced NFC
-#$(call inherit-product, vendor/cm/config/nfc_enhanced.mk)
+$(call inherit-product, vendor/nameless/config/nfc_enhanced.mk)
 
 PRODUCT_NAME := nameless_bacon
 PRODUCT_DEVICE := bacon
