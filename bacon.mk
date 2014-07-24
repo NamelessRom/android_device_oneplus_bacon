@@ -20,6 +20,9 @@ DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay vendor/extra/overlays/phone-108
 # Haters gonna hate..
 PRODUCT_CHARACTERISTICS := nosdcard
 
+# do not build dsp manager
+USE_DSP_MANAGER := false
+
 # Ramdisk
 PRODUCT_PACKAGES += \
     libinit_bacon \
