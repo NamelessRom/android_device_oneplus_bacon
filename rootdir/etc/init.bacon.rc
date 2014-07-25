@@ -17,7 +17,7 @@
 import /init.qcom-common.rc
 
 on fs
-    mount_all ./fstab.bacon
+    mount_all /fstab.bacon
     restorecon_recursive /persist
     setprop ro.crypto.fuse_sdcard true
 
@@ -48,6 +48,10 @@ on post-fs-data
     # Torch
     chown system camera /sys/class/leds/torch-light/brightness
     chmod 0660 /sys/class/leds/torch-light/brightness
+
+on property:init.svc.bootanim=stopped
+    # maybe vibrator less intrusive
+    write /sys/class/timed_output/vibrator/vtg_level 24
 
 # virtual sdcard daemon running as media_rw (1023)
 service sdcard /system/bin/sdcard -u 1023 -g 1023 -l /data/media /mnt/shell/emulated
