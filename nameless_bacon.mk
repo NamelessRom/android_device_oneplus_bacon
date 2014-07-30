@@ -34,7 +34,7 @@ $(call inherit-product, vendor/nameless/config/nfc_enhanced.mk)
 PRODUCT_NAME := nameless_bacon
 PRODUCT_DEVICE := bacon
 PRODUCT_MANUFACTURER := OnePlus
-PRODUCT_MODEL := One
+PRODUCT_MODEL := One A0001
 
 PRODUCT_GMS_CLIENTID_BASE := android-oneplus
 
