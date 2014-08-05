@@ -21,3 +21,7 @@ ro.gps.agps_provider=1
 
 # cabl is handled by the panel
 ro.qualcomm.cabl=0
+
+# fix infinite call ringing
+ro.telephony.call_ring.multiple=false
+ro.telephony.call_ring.delay=5000
