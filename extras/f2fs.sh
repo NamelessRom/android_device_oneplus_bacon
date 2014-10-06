@@ -1,0 +1,66 @@
+#!/sbin/sh
+
+block=/dev/block/platform/msm_sdcc.1/by-name/boot;
+ramdisk=/tmp/post_installation_extras/ramdisk;
+bin=/tmp/post_installation_extras/tools;
+split_img=/tmp/post_installation_extras/split_img;
+
+mkdir -p $ramdisk;
+cd $ramdisk;
+chmod -R 755 $bin;
+mkdir -p $split_img;
+
+# dump boot and extract ramdisk
+dump_boot() {
+  dd if=$block of=/tmp/post_installation_extras/boot.img;
+  $bin/unpackbootimg -i /tmp/post_installation_extras/boot.img -o $split_img;
+  gunzip -c $split_img/boot.img-ramdisk.gz | cpio -i;
+}
+
+# repack ramdisk then build and write image
+write_boot() {
+  cd $split_img;
+  cmdline=`cat *-cmdline`;
+  board=`cat *-board`;
+  base=`cat *-base`;
+  pagesize=`cat *-pagesize`;
+  kerneloff=`cat *-kerneloff`;
+  ramdiskoff=`cat *-ramdiskoff`;
+  tagsoff=`cat *-tagsoff`;
+  if [ -f *-second ]; then
+    second=`ls *-second`;
+    second="--second $split_img/$second";
+    secondoff=`cat *-secondoff`;
+    secondoff="--second_offset $secondoff";
+  fi;
+  if [ -f *-dtb ]; then
+    dtb=`ls *-dtb`;
+    dtb="--dt $split_img/$dtb";
+  fi;
+  cd $ramdisk;
+  find . | cpio -o -H newc | gzip > /tmp/post_installation_extras/ramdisk-new.cpio.gz;
+  $bin/mkbootimg --kernel $split_img/boot.img-zImage --ramdisk /tmp/post_installation_extras/ramdisk-new.cpio.gz $second --cmdline "$cmdline" --board "$board" --base $base --pagesize $pagesize --kernel_offset $kerneloff --ramdisk_offset $ramdiskoff $secondoff --tags_offset $tagsoff $dtb --output /tmp/post_installation_extras/boot-new.img;
+  dd if=/tmp/post_installation_extras/boot-new.img of=$block;
+}
+
+replace_line() {
+  if [ ! -z "$(grep "$2" $1)" ]; then
+    line=`grep -n "$2" $1 | cut -d: -f1`;
+    sed -i $line"s;.*;${3};" $1;
+  fi;
+}
+
+# backup_file <file>
+backup_file() { cp $1 $1~; }
+
+#####
+
+dump_boot;
+
+backup_file fstab.bacon
+
+replace_line fstab.bacon "/dev/block/platform/msm_sdcc.1/by-name/system       /system         ext4    ro,barrier=1                                                    wait" "/dev/block/platform/msm_sdcc.1/by-name/system       /system         f2fs    ro,noatime,nosuid,nodev,discard,nodiratime,inline_xattr,errors=recover wait";
+replace_line fstab.bacon "/dev/block/platform/msm_sdcc.1/by-name/userdata     /data           ext4    noatime,nosuid,nodev,barrier=1,data=ordered,noauto_da_alloc,errors=panic wait,check,encryptable=/dev/block/platform/msm_sdcc.1/by-name/reserve4" "/dev/block/platform/msm_sdcc.1/by-name/userdata     /data           f2fs    noatime,nosuid,nodev,discard,nodiratime,inline_xattr,errors=recover wait,nonremovable,encryptable=/dev/block/platform/msm_sdcc.1/by-name/reserve4";
+replace_line fstab.bacon "/dev/block/platform/msm_sdcc.1/by-name/cache        /cache          ext4    noatime,nosuid,nodev,barrier=1,data=ordered,noauto_da_alloc,errors=panic wait,check" "/dev/block/platform/msm_sdcc.1/by-name/cache        /cache          f2fs    noatime,nosuid,nodev,discard,nodiratime,inline_xattr,errors=recover wait";
+
+write_boot;
