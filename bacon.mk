@@ -50,6 +50,10 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/libnfc-nxp.conf:system/etc/libnfc-nxp.conf \
     $(LOCAL_PATH)/configs/libnfc-brcm.conf:system/etc/libnfc-brcm.conf
 
+# F2FS
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/extras/f2fs.sh:install/f2fs/f2fs.sh \
+
 # System properties
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.telephony.default_network=20
