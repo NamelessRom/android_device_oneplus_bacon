@@ -1,8 +1,8 @@
 [
   {
-    "remote": "nameless",
-    "repository": "android_device_oppo_msm8974-common",
+    "remote": "github",
+    "repository": "NamelessRom/android_device_oppo_msm8974-common",
     "target_path": "device/oppo/msm8974-common",
-    "revision": "android-4.4"
+    "revision": "n-2.0"
   }
 ]
