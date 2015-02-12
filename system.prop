@@ -26,6 +26,3 @@ ro.qualcomm.cabl=0
 # fix infinite call ringing
 ro.telephony.call_ring.multiple=false
 ro.telephony.call_ring.delay=5000
-
-# HACK for QC errata issue
-debug.hwui.render_dirty_regions=false
