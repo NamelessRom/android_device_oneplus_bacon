@@ -24,9 +24,6 @@ TARGET_SCREEN_WIDTH := 1080
 # Haters gonna hate..
 PRODUCT_CHARACTERISTICS := nosdcard
 
-# do not build dsp manager
-USE_DSP_MANAGER := false
-
 # Ramdisk
 PRODUCT_PACKAGES += \
     libinit_bacon \
