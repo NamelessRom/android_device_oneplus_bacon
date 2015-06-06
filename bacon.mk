@@ -64,6 +64,10 @@ PRODUCT_PROPERTY_OVERRIDES += \
 # Fuuuuu
 PRODUCT_PACKAGES += camera.bacon
 
+# Power
+PRODUCT_PACKAGES += \
+    power.msm8974
+
 # Device uses high-density artwork where available
 PRODUCT_AAPT_CONFIG := normal
 PRODUCT_AAPT_PREF_CONFIG := xxhdpi
